@@ -12,7 +12,7 @@ pipeline {
         stage('run postgres container ') {
             steps {
                 echo 'run postgres container'
-                sh 'docker container run -dt --name lms-db -e POSTGRES_PASSWORD=az123456 postgres'
+                sh ' sudo docker container run -dt --name lms-db -e POSTGRES_PASSWORD=az123456 postgres'
                 echo 'database container is running '
             }
         }

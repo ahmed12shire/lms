@@ -11,9 +11,11 @@ pipeline {
         // }
         stage('run postgres container ') {
             steps {
-                echo 'run postgres container'
-                sh ' sudo docker container run -dt --name lms-db -e POSTGRES_PASSWORD=az123456 postgres'
-                echo 'database container is running '
+                script {
+                    echo 'run postgres container'
+                    img = 'postgres'
+                    docker.image("$(img)").run('-dt --name lms-db -e POSTGRES_PASSWORD=az123456')
+                    echo 'database container is running '
             }
         }
 //         stage('Release LMS') {
@@ -43,6 +45,7 @@ pipeline {
 //         }
 
 //     }
-}
+        }
+    }
 }
 

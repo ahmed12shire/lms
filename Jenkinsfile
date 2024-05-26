@@ -1,7 +1,7 @@
 pipeline {
     agent any
 
-    // stages {
+    stages {
     //     stage('Docker Login') {
     //         steps {
     //             script {

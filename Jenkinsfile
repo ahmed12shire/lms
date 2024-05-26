@@ -14,7 +14,7 @@ pipeline {
                 script {
                     echo 'run postgres container'
                     img = 'postgres'
-                    docker.image("${img}").run('-dt --name lms-db -e POSTGRES_PASSWORD=az123456')
+                    docker.image("${img}").run('--name lms-db -e POSTGRES_PASSWORD=az123456')
                     echo 'database container is running '
             }
         }

@@ -2,50 +2,33 @@ pipeline {
     agent any
 
     stages {
-        // stage('Sonar Analysis') {
+        // stage('Run PostgreSQL Container') {
         //     steps {
-        //         echo 'CODE QUALITY CHECK'
-        //         sh 'cd webapp && sudo docker run  --rm -e SONAR_HOST_URL="http://34.222.106.155:9000" -e SONAR_LOGIN="sqp_31a2a065a5c706f2d31e4da19e61b346232ab619"  -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
-        //         echo 'CODE QUALITY COMPLETED'
+        //         script {
+        //             echo 'Running PostgreSQL container'
+        //             def img = 'postgres'
+        //             docker.image(img).run("--name lms-db -e POSTGRES_PASSWORD=az123456")
+        //             echo 'Database container is running'
+        //         }
         //     }
         // }
-        stage('run postgres container ') {
+
+        stage('Build Docker Image') {
             steps {
                 script {
-                    echo 'run postgres container'
-                    img = 'postgres'
-                    docker.image("${img}").run('--name lms-db -e POSTGRES_PASSWORD=az123456')
-                    echo 'database container is running '
+                    // Build Docker image
+                    sh "cd api && docker build -t ahmed12shire/lms-backend-j ."
+                }
             }
         }
-//         stage('Release LMS') {
-//             steps {
-//                 script {
-//                     def packageJson = readJSON file: 'webapp/package.json'
-//                     def packageJSONVersion = packageJson.version
-//                     echo "${packageJSONVersion}"
-//                     sh "zip webapp/lms-${packageJSONVersion}.zip -r webapp/dist"
-//                     sh "curl -v -u admin:lms12345 --upload-file webapp/lms-${packageJSONVersion}.zip http://34.222.106.155:8081/repository/lms/"
-//                 }
-//             }
-//         }
 
-//         stage('Deploy LMS') {
-//             steps {
-//                 script {
-//                     def packageJson = readJSON file: 'webapp/package.json'
-//                     def packageJSONVersion = packageJson.version
-//                     echo "${packageJSONVersion}"
-//                     sh "curl -u admin:lms12345 -X GET \'http://34.222.106.155:8081/repository/lms/lms-${packageJSONVersion}.zip\' --output lms-'${packageJSONVersion}'.zip"
-//                     sh 'sudo rm -rf /var/www/html/*'
-//                     sh "sudo unzip -o lms-'${packageJSONVersion}'.zip"
-//                     sh "sudo cp -r webapp/dist/* /var/www/html"       
-//                 }
-//             }
-//         }
-
-//     }
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    // Run Docker container
+                    sh "docker run -dt --name lms-backend-j -p 8080:8080 ahmed12shire/lms-backend-j"
+                }
+            }
         }
     }
 }
-

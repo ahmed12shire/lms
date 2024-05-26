@@ -21,7 +21,7 @@ pipeline {
             }
         }
         
-        stage('Run PostgreSQL Container') {
+        stage('Running PostgreSQL Container') {
             steps {
                 script {
                     echo 'Run PostgreSQL container'

@@ -12,8 +12,8 @@ pipeline {
         stage('run postgres container ') {
             steps {
                 echo 'run postgres container'
-                sh 'cd api && docker container run -dt --name lms-db -e POSTGRES_PASSWORD=az123456 postgres'
-                echo 'data base container is running '
+                sh 'docker container run -dt --name lms-db -e POSTGRES_PASSWORD=az123456 postgres'
+                echo 'database container is running '
             }
         }
 //         stage('Release LMS') {

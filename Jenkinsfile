@@ -32,7 +32,7 @@ pipeline {
             }
         }
 
-        stage('Build frontend Docker Image') {
+        stage('Build backend Docker Image') {
             steps {
                 script {
                     echo 'Build backend Docker Image'

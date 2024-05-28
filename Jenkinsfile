@@ -2,13 +2,13 @@ pipeline {
     agent any
 
     stages {
-         stage('Sonar Analysis') {
-           steps {
-               echo 'CODE QUALITY CHECK'
-               sh 'cd webapp && sudo docker run  --rm -e SONAR_HOST_URL="http://35.182.213.22:9000" -e SONAR_LOGIN="sqp_9b29b3fe4e022be2584e7a68d210dc442bc49630"  -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
-               echo 'CODE QUALITY DONE'
-           }
-       }
+        stage('Sonar Analysis') {
+            steps {
+                echo 'CODE QUALITY CHECK'
+                sh 'cd webapp && sudo docker run  --rm -e SONAR_HOST_URL="http://35.182.213.22:9000" -e SONAR_TOKEN="sqp_9b29b3fe4e022be2584e7a68d210dc442bc49630"  -v ".:/usr/src" sonarsource/sonar-scanner-cli -Dsonar.projectKey=lms'
+                echo 'CODE QUALITY DONE'
+            }
+        }
 
         stage('Docker Login') {
             steps {
@@ -20,7 +20,7 @@ pipeline {
                 }
             }
         }
-        
+
         stage('Running PostgreSQL Container') {
             steps {
                 script {
@@ -36,12 +36,13 @@ pipeline {
             steps {
                 script {
                     echo 'Build backend Docker Image'
-                    sh "cd api && docker build -t ahmed12shire/lms-backend-j ."
+                    def version = sh(script: "cd api && cat package.json | grep '\"version\"' | cut -d '\"' -f 4", returnStdout: true).trim()
+                    sh "cd api && docker build --build-arg VERSION=${version} -t ahmed12shire/lms-backend-j ."
                     echo 'Image build complete'
                 }
             }
         }
-        
+
         stage('Push backend Docker Image') {
             steps {
                 script {
@@ -65,7 +66,8 @@ pipeline {
             steps {
                 script {
                     echo 'Build Docker Backend Image'
-                    sh "cd webapp && docker build -t ahmed12shire/lms-frontend-j ."
+                    def version = sh(script: "cd webapp && cat package.json | grep '\"version\"' | cut -d '\"' -f 4", returnStdout: true).trim()
+                    sh "cd webapp && docker build --build-arg VERSION=${version} -t ahmed12shire/lms-frontend-j ."
                     echo 'Image build complete'
                 }
             }
